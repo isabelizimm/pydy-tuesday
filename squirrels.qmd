@@ -1,0 +1,49 @@
+---
+title: "Central Park Squirrel Sightings"
+subtitle: "Tidy Tuesday 2023-05-23"
+---
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+raw_data = "https://raw.githubusercontent.com/rfordatascience/tidytuesday/refs/heads/main/data/2023/2023-05-23/squirrel_data.csv"
+df = pd.read_csv(raw_data)
+```
+
+```{python}
+# Fill missing values in categorical columns with "Unknown"
+categorical_cols = ["Age", "Primary Fur Color", "Location"]
+for col in categorical_cols:
+    df[col] = df[col].fillna("Unknown")
+
+# Drop columns with excessive missing values that are not needed for analysis
+df = df.drop(columns=["Color notes", "Specific Location", "Other Activities", "Other Interactions"])
+```
+
+```{python}
+# What color occurs most often?
+plt.figure()
+sns.countplot(data=df, x="Primary Fur Color", order=df["Primary Fur Color"].value_counts().index)
+plt.xlabel("Primary Fur Color")
+plt.ylabel("Count")
+plt.xticks(rotation=30)
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+plt.show()
+```
+
+```{python}
+# What activities are these squirrels participating in?
+activities = ["Running", "Chasing", "Foraging", "Eating", "Climbing"]
+activity_count = df[activities].sum()
+plt.figure()
+sns.barplot(x=activity_count.index, y=activity_count.values)
+plt.title("Squirrel Activity Distribution")
+plt.xlabel("Activity")
+plt.ylabel("Count")
+plt.xticks(rotation=30)
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+plt.show()
+```
